@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Currículo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css"> <!-- Se tiver um CSS -->
+</head>
+<body>
+
+    <h1 th:text="${modoEdicao} ? 'Editar Currículo' : 'Novo Currículo'"></h1>
+
+    <form th:action="@{/salvar}" th:object="${curriculo}" method="post">
+
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" th:field="*{nome}" required>
+        </div>
+
+        <div>
+            <label for="profissao">Profissão:</label>
+            <input type="text" id="profissao" th:field="*{profissao}" required>
+        </div>
+
+        <div>
+            <label for="telefone">Telefone:</label>
+            <input type="text" id="telefone" th:field="*{telefone}">
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{email}">
+        </div>
+
+        <div>
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" th:field="*{endereco}">
+        </div>
+
+        <div>
+            <label for="linkedin">LinkedIn:</label>
+            <input type="text" id="linkedin" th:field="*{linkedin}">
+        </div>
+
+        <div>
+            <label for="github">GitHub:</label>
+            <input type="text" id="github" th:field="*{github}">
+        </div>
+
+        <div>
+            <label for="resumoProfissional">Resumo Profissional:</label>
+            <textarea id="resumoProfissional" th:field="*{resumoProfissional}"></textarea>
+        </div>
+
+        <div>
+            <label for="experienciaProfissional">Experiência Profissional:</label>
+            <textarea id="experienciaProfissional" th:field="*{experienciaProfissional}"></textarea>
+        </div>
+
+        <div>
+            <label for="formacaoAcademica">Formação Acadêmica:</label>
+            <textarea id="formacaoAcademica" th:field="*{formacaoAcademica}"></textarea>
+        </div>
+
+        <div>
+            <label for="habilidades">Habilidades:</label>
+            <textarea id="habilidades" th:field="*{habilidades}"></textarea>
+        </div>
+
+        <div>
+            <label for="idiomas">Idiomas:</label>
+            <textarea id="idiomas" th:field="*{idiomas}"></textarea>
+        </div>
+
+        <div>
+            <button type="submit">Salvar</button>
+
+            <a th:if="${modoEdicao}" th:href="@{/curriculo}">
+                <button type="button">Voltar</button>
+            </a>
+        </div>
+
+    </form>
+
+</body>
+</html>

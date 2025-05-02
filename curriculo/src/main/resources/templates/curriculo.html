@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Currículo</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="curriculo-container">
+        <header>
+            <h1 th:text="${curriculo.nome}">Nome Completo</h1>
+            <h2 th:text="${curriculo.profissao}">Profissão</h2>
+
+            <p>
+                <strong>Telefone:</strong> 
+                <span th:text="${#strings.length(curriculo.telefone) == 11 ? 
+                    '(' + curriculo.telefone.substring(0,2) + ') ' + curriculo.telefone.substring(2,7) + '-' + curriculo.telefone.substring(7) :
+                    curriculo.telefone}">
+                    Telefone
+                </span> | 
+                <strong>Email:</strong> 
+                <span th:text="${curriculo.email}">Email</span>
+            </p>
+
+            <p><strong>Endereço:</strong> <span th:text="${curriculo.endereco}">Endereço</span></p>
+
+            <p>
+                <a th:href="${curriculo.linkedin}" target="_blank">LinkedIn</a> | 
+                <a th:href="${curriculo.github}" target="_blank">GitHub</a>
+            </p>
+        </header>
+
+        <section>
+            <h3>Resumo Profissional</h3>
+            <p th:text="${curriculo.resumoProfissional}">Resumo Profissional</p>
+        </section>
+
+        <section>
+            <h3>Experiência Profissional</h3>
+            <p th:text="${curriculo.experienciaProfissional}">Experiência Profissional</p>
+        </section>
+
+        <section>
+            <h3>Formação Acadêmica</h3>
+            <p th:text="${curriculo.formacaoAcademica}">Formação Acadêmica</p>
+        </section>
+
+        <section>
+            <h3>Habilidades</h3>
+            <p th:text="${curriculo.habilidades}">Habilidades</p>
+        </section>
+
+        <section>
+            <h3>Idiomas</h3>
+            <p th:text="${curriculo.idiomas}">Idiomas</p>
+        </section>
+        <div class="botoes">
+            <a href="/curriculo/pdf" class="btn-baixar">Baixar PDF</a>
+            <a href="/editar" class="btn-editar">Editar</a>
+            <a href="/" class="btn-voltar">Voltar</a>
+        </div>
+</body>
+</html>
