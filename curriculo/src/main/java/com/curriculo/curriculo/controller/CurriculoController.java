@@ -23,10 +23,10 @@ public class CurriculoController {
 
     @GetMapping("/")
     public String showForm(Model model) {
-    model.addAttribute("curriculo", new Curriculo());
-    model.addAttribute("modoEdicao", false); // <<< adiciona a flag no novo também
-    return "form";
-}
+        model.addAttribute("curriculo", new Curriculo());
+        model.addAttribute("modoEdicao", false); // <<< adiciona a flag no novo também
+        return "form";
+    }
 
     @PostMapping("/salvar")
     public String salvarCurriculo(@ModelAttribute Curriculo curriculo) {
@@ -46,18 +46,16 @@ public class CurriculoController {
 
     @GetMapping("/curriculo/pdf")
     public void gerarPdf(HttpServletResponse response) throws IOException {
-        // Buscar o último currículo inserido, em vez de buscar por ID fixo
         Curriculo curriculo = repository.findAll()
                 .stream()
-                .reduce((first, second) -> second)  // Pega o último inserido
-                .orElse(new Curriculo()); // Caso não tenha nenhum, cria um currículo em branco
+                .reduce((first, second) -> second)
+                .orElse(new Curriculo());
 
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=curriculo.pdf");
 
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50); // margem
+        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         PdfWriter.getInstance(document, response.getOutputStream());
-
         document.open();
 
         // Títulos e fontes
@@ -81,12 +79,14 @@ public class CurriculoController {
         profissao.setSpacingAfter(15);
         document.add(profissao);
 
-        // Contato - Extrair nome do LinkedIn e GitHub
+        // Formatações auxiliares
+        String telefoneFormatado = formatarTelefone(curriculo.getTelefone());
         String linkedinNome = curriculo.getLinkedin() != null ? getPerfilNome(curriculo.getLinkedin()) : "Não informado";
         String githubNome = curriculo.getGithub() != null ? getPerfilNome(curriculo.getGithub()) : "Não informado";
 
+        // Contato
         Paragraph contato = new Paragraph(
-                "Telefone: " + curriculo.getTelefone() + " | Email: " + curriculo.getEmail() + "\n" +
+                "Telefone: " + telefoneFormatado + " | Email: " + curriculo.getEmail() + "\n" +
                 "Endereço: " + curriculo.getEndereco() + "\n" +
                 "LinkedIn: " + linkedinNome + " | GitHub: " + githubNome,
                 textoFont
@@ -95,7 +95,7 @@ public class CurriculoController {
         contato.setSpacingAfter(20);
         document.add(contato);
 
-        // Função para criar seção
+        // Seções
         adicionarSecao(document, "Resumo Profissional", curriculo.getResumoProfissional(), secaoTituloFont, textoFont);
         adicionarSecao(document, "Experiência Profissional", curriculo.getExperienciaProfissional(), secaoTituloFont, textoFont);
         adicionarSecao(document, "Formação Acadêmica", curriculo.getFormacaoAcademica(), secaoTituloFont, textoFont);
@@ -105,13 +105,11 @@ public class CurriculoController {
         document.close();
     }
 
-    // Função para extrair nome de perfil do LinkedIn ou GitHub
     private String getPerfilNome(String url) {
         if (url != null) {
-            // Tenta extrair o nome do perfil, levando em consideração a URL do LinkedIn ou GitHub
             String[] partes = url.split("/");
             if (partes.length > 0) {
-                return partes[partes.length - 1];  // Pega a última parte da URL
+                return partes[partes.length - 1];
             }
         }
         return "Não informado";
@@ -122,17 +120,16 @@ public class CurriculoController {
             conteudo = "Não informado.";
         }
 
-        // Adiciona título da seção
         Paragraph secaoTitulo = new Paragraph(titulo, tituloFont);
         secaoTitulo.setSpacingBefore(10);
         secaoTitulo.setSpacingAfter(5);
         document.add(secaoTitulo);
 
-        // Adiciona conteúdo da seção
         Paragraph secaoConteudo = new Paragraph(conteudo, textoFont);
         secaoConteudo.setSpacingAfter(10);
         document.add(secaoConteudo);
     }
+
     @GetMapping("/editar")
     public String editarCurriculo(Model model) {
         Curriculo curriculo = repository.findAll()
@@ -140,7 +137,27 @@ public class CurriculoController {
                 .reduce((first, second) -> second)
                 .orElse(new Curriculo());
         model.addAttribute("curriculo", curriculo);
-        model.addAttribute("modoEdicao", true); // <<< adiciona a flag
+        model.addAttribute("modoEdicao", true);
         return "form";
+    }
+
+    // Função para formatar telefone no estilo (11) 91234-5678
+    private String formatarTelefone(String telefone) {
+        if (telefone == null) return "Não informado";
+        telefone = telefone.replaceAll("[^0-9]", ""); // remove tudo que não é número
+
+        if (telefone.length() == 11) {
+            return String.format("(%s) %s-%s",
+                    telefone.substring(0, 2),
+                    telefone.substring(2, 7),
+                    telefone.substring(7));
+        } else if (telefone.length() == 10) {
+            return String.format("(%s) %s-%s",
+                    telefone.substring(0, 2),
+                    telefone.substring(2, 6),
+                    telefone.substring(6));
+        } else {
+            return telefone; // se não tiver tamanho certo, retorna cru
+        }
     }
 }

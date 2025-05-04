@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <h1 th:text="${modoEdicao} ? 'Editar Currículo' : 'Novo Currículo'"></h1>
+    <h1 class="form-title" th:text="${modoEdicao} ? 'Editar Currículo' : 'Novo Currículo'"></h1>
 
     <form th:action="@{/salvar}" th:object="${curriculo}" method="post">
 
@@ -44,11 +44,6 @@
         <div>
             <label for="github">GitHub:</label>
             <input type="text" id="github" th:field="*{github}">
-        </div>
-
-        <div>
-            <label for="resumoProfissional">Resumo Profissional:</label>
-            <textarea id="resumoProfissional" th:field="*{resumoProfissional}"></textarea>
         </div>
 
         <div>
