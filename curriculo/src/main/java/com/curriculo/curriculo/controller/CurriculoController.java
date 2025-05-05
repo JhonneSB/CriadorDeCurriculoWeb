@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.curriculo.curriculo.builder.CurriculoBuilder;
 import com.curriculo.curriculo.model.Curriculo;
 import com.curriculo.curriculo.repository.CurriculoRepository;
 import com.lowagie.text.*;
@@ -24,12 +26,36 @@ public class CurriculoController {
     @GetMapping("/")
     public String showForm(Model model) {
         model.addAttribute("curriculo", new Curriculo());
-        model.addAttribute("modoEdicao", false); // <<< adiciona a flag no novo também
+        model.addAttribute("modoEdicao", false);
         return "form";
     }
 
     @PostMapping("/salvar")
-    public String salvarCurriculo(@ModelAttribute Curriculo curriculo) {
+    public String salvarCurriculo(@ModelAttribute Curriculo curriculoForm, Model model) {
+        // Validação de campos obrigatórios
+        if (curriculoForm.getEmail() == null || curriculoForm.getEmail().isBlank() ||
+            curriculoForm.getTelefone() == null || curriculoForm.getTelefone().isBlank()) {
+            model.addAttribute("erro", "Email e Telefone são obrigatórios.");
+            model.addAttribute("modoEdicao", false);
+            model.addAttribute("curriculo", curriculoForm);
+            return "form";
+        }
+
+        Curriculo curriculo = new CurriculoBuilder()
+            .comNome(curriculoForm.getNome())
+            .comProfissao(curriculoForm.getProfissao())
+            .comEmail(curriculoForm.getEmail())
+            .comTelefone(curriculoForm.getTelefone())
+            .comEndereco(curriculoForm.getEndereco())
+            .comLinkedin(curriculoForm.getLinkedin())
+            .comGithub(curriculoForm.getGithub())
+            .comResumoProfissional(curriculoForm.getResumoProfissional())
+            .comExperienciaProfissional(curriculoForm.getExperienciaProfissional())
+            .comFormacaoAcademica(curriculoForm.getFormacaoAcademica())
+            .comHabilidades(curriculoForm.getHabilidades())
+            .comIdiomas(curriculoForm.getIdiomas())
+            .build();
+
         repository.save(curriculo);
         return "redirect:/curriculo";
     }
@@ -39,7 +65,7 @@ public class CurriculoController {
         Curriculo curriculo = repository.findAll()
                 .stream()
                 .reduce((first, second) -> second)
-                .orElse(new Curriculo()); // pega o último inserido
+                .orElse(new Curriculo());
         model.addAttribute("curriculo", curriculo);
         return "curriculo";
     }
@@ -58,18 +84,15 @@ public class CurriculoController {
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
 
-        // Títulos e fontes
         Font tituloFont = new Font(Font.HELVETICA, 22, Font.BOLD);
         Font secaoTituloFont = new Font(Font.HELVETICA, 16, Font.BOLD);
         Font textoFont = new Font(Font.HELVETICA, 12, Font.NORMAL);
 
-        // Título principal
         Paragraph titulo = new Paragraph("Currículo", tituloFont);
         titulo.setAlignment(Paragraph.ALIGN_CENTER);
         titulo.setSpacingAfter(20);
         document.add(titulo);
 
-        // Nome e Profissão
         Paragraph nome = new Paragraph(curriculo.getNome(), new Font(Font.HELVETICA, 18, Font.BOLD));
         nome.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(nome);
@@ -79,23 +102,27 @@ public class CurriculoController {
         profissao.setSpacingAfter(15);
         document.add(profissao);
 
-        // Formatações auxiliares
         String telefoneFormatado = formatarTelefone(curriculo.getTelefone());
-        String linkedinNome = curriculo.getLinkedin() != null ? getPerfilNome(curriculo.getLinkedin()) : "Não informado";
-        String githubNome = curriculo.getGithub() != null ? getPerfilNome(curriculo.getGithub()) : "Não informado";
 
-        // Contato
-        Paragraph contato = new Paragraph(
-                "Telefone: " + telefoneFormatado + " | Email: " + curriculo.getEmail() + "\n" +
-                "Endereço: " + curriculo.getEndereco() + "\n" +
-                "LinkedIn: " + linkedinNome + " | GitHub: " + githubNome,
-                textoFont
-        );
+        Paragraph contato = new Paragraph("Telefone: " + telefoneFormatado + " | Email: " + curriculo.getEmail()
+                + "\nEndereço: " + curriculo.getEndereco(), textoFont);
         contato.setAlignment(Paragraph.ALIGN_CENTER);
-        contato.setSpacingAfter(20);
+        contato.setSpacingAfter(10);
         document.add(contato);
 
-        // Seções
+        if (curriculo.getLinkedin() != null && !curriculo.getLinkedin().isBlank()) {
+            Paragraph linkedin = new Paragraph("LinkedIn: " + getPerfilNome(curriculo.getLinkedin()), textoFont);
+            linkedin.setAlignment(Paragraph.ALIGN_CENTER);
+            document.add(linkedin);
+        }
+
+        if (curriculo.getGithub() != null && !curriculo.getGithub().isBlank()) {
+            Paragraph github = new Paragraph("GitHub: " + getPerfilNome(curriculo.getGithub()), textoFont);
+            github.setAlignment(Paragraph.ALIGN_CENTER);
+            github.setSpacingAfter(20);
+            document.add(github);
+        }
+
         adicionarSecao(document, "Resumo Profissional", curriculo.getResumoProfissional(), secaoTituloFont, textoFont);
         adicionarSecao(document, "Experiência Profissional", curriculo.getExperienciaProfissional(), secaoTituloFont, textoFont);
         adicionarSecao(document, "Formação Acadêmica", curriculo.getFormacaoAcademica(), secaoTituloFont, textoFont);
@@ -105,20 +132,8 @@ public class CurriculoController {
         document.close();
     }
 
-    private String getPerfilNome(String url) {
-        if (url != null) {
-            String[] partes = url.split("/");
-            if (partes.length > 0) {
-                return partes[partes.length - 1];
-            }
-        }
-        return "Não informado";
-    }
-
     private void adicionarSecao(Document document, String titulo, String conteudo, Font tituloFont, Font textoFont) throws DocumentException {
-        if (conteudo == null || conteudo.isEmpty()) {
-            conteudo = "Não informado.";
-        }
+        if (conteudo == null || conteudo.isBlank()) return;
 
         Paragraph secaoTitulo = new Paragraph(titulo, tituloFont);
         secaoTitulo.setSpacingBefore(10);
@@ -128,6 +143,14 @@ public class CurriculoController {
         Paragraph secaoConteudo = new Paragraph(conteudo, textoFont);
         secaoConteudo.setSpacingAfter(10);
         document.add(secaoConteudo);
+    }
+
+    private String getPerfilNome(String url) {
+        if (url != null && url.contains("/")) {
+            String[] partes = url.split("/");
+            return partes[partes.length - 1];
+        }
+        return url;
     }
 
     @GetMapping("/editar")
@@ -141,10 +164,9 @@ public class CurriculoController {
         return "form";
     }
 
-    // Função para formatar telefone no estilo (11) 91234-5678
     private String formatarTelefone(String telefone) {
         if (telefone == null) return "Não informado";
-        telefone = telefone.replaceAll("[^0-9]", ""); // remove tudo que não é número
+        telefone = telefone.replaceAll("[^0-9]", "");
 
         if (telefone.length() == 11) {
             return String.format("(%s) %s-%s",
@@ -157,7 +179,7 @@ public class CurriculoController {
                     telefone.substring(2, 6),
                     telefone.substring(6));
         } else {
-            return telefone; // se não tiver tamanho certo, retorna cru
+            return telefone;
         }
     }
 }
