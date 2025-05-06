@@ -1,0 +1,20 @@
+-- Criação do Banco de Dados
+CREATE DATABASE IF NOT EXISTS curriculo_db;
+USE curriculo_db;
+
+-- Criação da Tabela Currículos
+CREATE TABLE IF NOT EXISTS curriculos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    profissao VARCHAR(100) NOT NULL,
+    resumo_profissional TEXT,
+    experiencia_profissional TEXT,
+    formacao_academica TEXT,
+    habilidades TEXT,
+    idiomas TEXT,
+    telefone VARCHAR(20),
+    email VARCHAR(150),
+    endereco VARCHAR(255),
+    linkedin VARCHAR(255),
+    github VARCHAR(255)
+);
