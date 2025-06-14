@@ -1,0 +1,43 @@
+-- Criação do Banco de Dados
+DROP SCHEMA IF EXISTS curriculo_db;
+CREATE SCHEMA curriculo_db;
+USE curriculo_db;
+
+-- Criação da Tabela User
+CREATE TABLE IF NOT EXISTS user (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(150) NOT NULL,
+    password VARCHAR(150) NOT NULL
+);
+
+-- Criação da Tabela Curriculos
+CREATE TABLE IF NOT EXISTS curriculos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    profissao VARCHAR(100) NOT NULL,
+    resumo_profissional TEXT,
+    experiencia_profissional TEXT,
+    formacao_academica TEXT,
+    habilidades TEXT,
+    idiomas TEXT,
+    telefone VARCHAR(20),
+    email VARCHAR(150),
+    endereco VARCHAR(255),
+    linkedin VARCHAR(255),
+    github VARCHAR(255),
+    user_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+-- Inserção de Dados de Exemplo para a Tabela User
+INSERT INTO user (username, password) VALUES
+('usuario1', 'senha1'),
+('usuario2', 'senha2');
+
+-- Inserção de Dados de Exemplo para a Tabela Curriculos
+INSERT INTO curriculos 
+(nome, profissao, resumo_profissional, experiencia_profissional, formacao_academica, habilidades, idiomas, telefone, email, endereco, linkedin, github, user_id) 
+VALUES
+('João Silva', 'Desenvolvedor Java', 'Resumo sobre João...', 'Experiência profissional de João...', 'Formação de João...', 'Java, Spring', 'Inglês, Espanhol', '123456789', 'joao@exemplo.com', 'Rua A, 123', 'https://linkedin.com/in/joaosilva', 'https://github.com/joaosilva', 1),
+('Maria Souza', 'Analista de Sistemas', 'Resumo sobre Maria...', 'Experiência profissional de Maria...', 'Formação de Maria...', 'Java, Python', 'Inglês, Francês', '987654321', 'maria@exemplo.com', 'Rua B, 456', 'https://linkedin.com/in/mariasouza', 'https://github.com/mariasouza', 2);
+

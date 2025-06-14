@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Currículo</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/criarCurriculo.css">
 </head>
 <body>
     <div class="curriculo-container">
@@ -18,6 +18,7 @@
                     curriculo.telefone}">
                     Telefone
                 </span> | 
+
                 <strong>Email:</strong> 
                 <span th:text="${curriculo.email}">Email</span>
             </p>
@@ -25,10 +26,15 @@
             <p><strong>Endereço:</strong> <span th:text="${curriculo.endereco}">Endereço</span></p>
 
             <p>
-                <a th:href="${curriculo.linkedin}" target="_blank">LinkedIn</a> | 
-                <a th:href="${curriculo.github}" target="_blank">GitHub</a>
+                <span th:if="${curriculo.linkedin != null and !curriculo.linkedin.isBlank()}">
+                    <a th:href="${curriculo.linkedin}" target="_blank">LinkedIn</a>
+                </span>
+                <span th:if="${curriculo.github != null and !curriculo.github.isBlank()}">
+                    | <a th:href="${curriculo.github}" target="_blank">GitHub</a>
+                </span>
             </p>
         </header>
+
         <section>
             <h3>Experiência Profissional</h3>
             <p th:text="${curriculo.experienciaProfissional}">Experiência Profissional</p>
@@ -48,10 +54,19 @@
             <h3>Idiomas</h3>
             <p th:text="${curriculo.idiomas}">Idiomas</p>
         </section>
+
         <div class="botoes">
-            <a href="/curriculo/pdf" class="btn-baixar">Baixar PDF</a>
-            <a href="/editar" class="btn-editar">Editar</a>
-            <a href="/" class="btn-voltar">Voltar</a>
+            <a th:href="@{/curriculo/{id}/clonar(id=${curriculo.id})}" class="btn-acao btn-clonar">Clonar</a>
+            <a th:href="@{/curriculo/{id}/pdf(id=${curriculo.id})}" class="btn-acao btn-baixar">Baixar PDF</a>
+            <a th:href="@{'/curriculo/' + ${curriculo.id} + '/editar'}" class="btn-acao btn-editar">Editar</a>
+            <form th:action="@{'/curriculo/' + ${curriculo.id} + '/excluir'}"
+                method="post"
+                style="display: inline;"
+                onsubmit="return confirm('Tem certeza que deseja excluir este currículo?');">
+                <button type="submit" class="btn-acao btn-excluir">Excluir</button>
+            </form>
+            <a th:href="@{/main}" class="btn-acao btn-voltar">Voltar</a>
         </div>
+    </div>
 </body>
 </html>

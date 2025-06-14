@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Contratos</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="login" id="login-form">
+            <h1>Login</h1>
+            <form method="post" th:action="@{/login}">
+                <div class="form-group">
+                    <label for="login-user">Usuário:</label>
+                    <input type="text" id="login-user" name="username" placeholder="Insira seu usuário" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Senha:</label>
+                    <input type="password" id="login-password" name="password" placeholder="Insira sua senha" required>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit">Entrar</button>
+                    <button type="reset">Limpar</button>
+                </div>
+            </form>
+            <hr>
+            <div class="go-register">
+                <p>Não tem uma conta? <a href="javascript:void(0);" onclick="toggleForms()">Crie uma agora</a></p>
+            </div>
+        </div>
+
+        <div class="register" id="register-form" style="display:none;">
+            <form method="post" th:action="@{/register}">
+                <h1>Register</h1>
+                <div class="form-group">
+                    <label for="register-user">Usuário:</label>
+                    <input type="text" id="register-user" name="username" placeholder="Insira seu usuário" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-password">Senha:</label>
+                    <input type="password" id="register-password" name="password" placeholder="Insira sua senha"
+                        required>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit">Registrar</button>
+                </div>
+            </form>
+            <hr>
+            <div class="cancel-register">
+                <p>Já tem uma conta? <a href="javascript:void(0);" onclick="toggleForms()">Retornar ao login</a></p>
+            </div>
+        </div>
+
+        <div id="error-popup" class="error-popup" style="display: none;">
+            <span id="error-message">Usuário ou senha incorretos!</span>
+            <button onclick="closePopup()">&#x2715;</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleForms() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
+            registerForm.style.display = (registerForm.style.display === 'none') ? 'block' : 'none';
+        }
+        function showErrorPopup(message) {
+            const popup = document.getElementById('error-popup');
+            const messageSpan = document.getElementById('error-message');
+            messageSpan.innerText = message;
+            popup.style.display = 'flex';
+
+            // Fechar automaticamente após 5 segundos
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 5000);
+        }
+
+        function closePopup() {
+            document.getElementById('error-popup').style.display = 'none';
+        }
+
+        // Capturar erro da URL
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('error')) {
+                showErrorPopup("Usuário ou senha incorretos!");
+            }
+        };
+    </script>
+</body>
+
+</html>

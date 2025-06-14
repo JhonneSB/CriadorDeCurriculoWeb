@@ -1,11 +1,17 @@
-package com.curriculo.curriculo.model;
+package com.senai.mikajuca.model;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "curriculos")
-public class Curriculo {
+public class Curriculo implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,12 +53,24 @@ public class Curriculo {
     @Column(length = 255)
     private String github;
 
+    // Relacionamento com a tabela User
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)  // A coluna user_id na tabela curriculos será a chave estrangeira
+    private User user;
+
     // Construtor vazio (obrigatório para JPA)
     public Curriculo() {
     }
 
     // Getters e Setters
     
+    @Override
+    public Curriculo clone() throws CloneNotSupportedException {
+        // Clonando o objeto Curriculo
+        Curriculo cloned = (Curriculo) super.clone();
+        return cloned;
+    }
+
     public Long getId() {
         return id;
     }
@@ -155,5 +173,13 @@ public class Curriculo {
 
     public void setGithub(String github) {
         this.github = github;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

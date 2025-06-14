@@ -1,10 +1,10 @@
-package com.curriculo.curriculo;
+package com.senai.mikajuca;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CurriculoApplicationTests {
+class MikajucaApplicationTests {
 
 	@Test
 	void contextLoads() {

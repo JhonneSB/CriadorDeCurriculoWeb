@@ -1,4 +1,3 @@
-/* Garantir que o body ocupe toda a altura da tela */
 html, body {
     height: 100%;
     overflow-x: hidden;
@@ -6,7 +5,6 @@ html, body {
     padding: 0;
 }
 
-/* Estilos gerais do corpo */
 body {
     background: linear-gradient(135deg, rgba(17, 17, 17, 0.7), rgba(51, 51, 51, 0.7)),
                 url('https://sdmntpreastus2.oaiusercontent.com/files/00000000-38dc-61f6-9256-5330895f5c5c/raw?se=2025-05-05T00%3A32%3A12Z&sp=r&sv=2024-08-04&sr=b&scid=778f70c2-b352-5b9f-b370-175265ccf7b4&skoid=e4438ed3-2a6f-4fd3-bf63-222012dc627c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-04T19%3A31%3A42Z&ske=2025-05-05T19%3A31%3A42Z&sks=b&skv=2024-08-04&sig=l6JCBF0%2BaNJSgFy6KV7sacVnamjGduPPWenAVSpREMY%3D') no-repeat center center fixed;
@@ -15,7 +13,15 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Estilo do container de formulário */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #1c2b3a, #1e3a5c);
+    color: white;
+}
+
+
+/* Container do formulário */
 .container {
     width: 90%;
     max-width: 600px;
@@ -25,9 +31,13 @@ body {
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-/* Estilo do container de currículo */
+/* Container do currículo */
 .curriculo-container {
     width: 90%;
     max-width: 900px;
@@ -37,6 +47,10 @@ body {
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 /* Títulos */
@@ -49,7 +63,7 @@ h1, h2, h3 {
     margin-bottom: 20px;
 }
 
-/* Estilo para centralizar o título do formulário */
+/* Título do formulário */
 .form-title {
     text-align: center;
     margin-bottom: 30px;
@@ -57,31 +71,35 @@ h1, h2, h3 {
     color: #ffffff;
 }
 
-/* Estilo de parágrafos e links */
+/* Parágrafos e links */
 p, a {
     color: #dcdcdc;
     text-decoration: none;
+    text-align: center;
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-/* Estilo dos campos do formulário */
+/* Formulário */
 form {
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    align-items: center;
     padding: 20px;
     background: rgba(44, 44, 44, 0.5);
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
     backdrop-filter: blur(6px);
+    text-align: center;
 }
 
+/* Campos do formulário */
 form input, form textarea {
     width: 100%;
     margin-bottom: 15px;
@@ -106,7 +124,7 @@ textarea {
     overflow-y: auto;
 }
 
-/* Estilo do botão de envio */
+
 form button {
     width: 100%;
     padding: 15px;
@@ -129,22 +147,22 @@ form button:hover {
     box-shadow: 0 0 12px #00bfff88;
 }
 
-/* Estilo dos botões adicionais */
-.btn-voltar, .btn-baixar, .btn-editar {
+.btn-acao {
     display: inline-block;
     padding: 12px 22px;
     color: white;
     text-decoration: none;
     border-radius: 12px;
     font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
     margin-top: 20px;
     margin-right: 10px;
-    box-sizing: border-box;
+    transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    border: none;
+    cursor: pointer;
 }
 
-/* Botões com cores diferentes */
+
 .btn-voltar {
     background-color: #4CAF50;
 }
@@ -169,10 +187,75 @@ form button:hover {
     transform: scale(1.05);
 }
 
-/* Estilo para a área de botões */
+.btn-clonar {
+    background-color: #9c27b0;
+}
+.btn-clonar:hover {
+    background-color: #7b1fa2;
+    transform: scale(1.05);
+}
+
+.btn-excluir {
+    background-color: #f44336;
+}
+.btn-excluir:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+
 .botoes {
     text-align: center;
     margin-top: 30px;
+}
+form div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #ffffff;
+}
+.btn-voltar-form {
+    display: block;
+    width: 95%;
+    padding: 15px;
+    background-color: #00bfff;
+    border: none;
+    border-radius: 12px;
+    color: #1f1f1f;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 0 10px #00bfff44;
+}
+
+.btn-voltar-form:hover {
+    background-color: #0095c2;
+    transform: scale(1.03);
+    box-shadow: 0 0 12px #00bfff88;
+}
+.botoes form {
+    display: inline;
+    width: auto;
+    max-width: none;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+.botoes form .btn-excluir {
+    width: auto;
+    display: inline-block;
 }
 
 /* Responsividade */
@@ -182,7 +265,16 @@ form button:hover {
         margin: 20px auto;
         padding: 20px;
     }
+
     form {
         padding: 15px;
     }
+
+    .btn-acao {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
 }
